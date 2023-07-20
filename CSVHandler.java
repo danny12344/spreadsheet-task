@@ -11,6 +11,12 @@ public class CSVHandler {
 
     public static HashMap<String, String> cellContentsMap = new HashMap<>();
 
+    
+    /** 
+     * @param filePath of the CSV to evaluate
+     * @return HashMap<String, String> representing the CSV as a HashMap
+     * @throws FileNotFoundException
+     */
     public static HashMap<String, String> parseCSV(String filePath) throws FileNotFoundException{
 
         File csvFile = new File(filePath);
@@ -28,19 +34,19 @@ public class CSVHandler {
             }
             row++;
         }
-
         scanner.close();
-        // Print the HashMap for verification (Optional)
-        // for (String cellNotation : cellContentsMap.keySet()) {
-        //     String cellContent = cellContentsMap.get(cellNotation);
-        //     System.out.println("Cell: " + cellNotation + "     Cell CONTENT: " + cellContent);
-        // }
+
         return cellContentsMap;
     }
 
+    
+    /** 
+     * @param hashMap of the CSV to conver to a CSV
+     * @param filePath location to write the CSV to
+     */
     public static void writeHashMapToCSV(HashMap<String, String> hashMap, String filePath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            // Find the maximum row and column indices from the cell references
+
             int maxRow = -1;
             int maxCol = -1;
 
@@ -55,10 +61,8 @@ public class CSVHandler {
                 }
             }
 
-            // Create a 2D array to hold the CSV data
             String[][] csvData = new String[maxRow + 1][maxCol + 1];
 
-            // Fill the CSV data with values from the HashMap
             for (Map.Entry<String, String> entry : hashMap.entrySet()) {
                 String cellReference = entry.getKey();
                 String cellValue = entry.getValue();
@@ -89,6 +93,11 @@ public class CSVHandler {
         }
     }
 
+    
+    /** 
+     * @param cellReference in Letter Number notation
+     * @return String[] with two elements in to represent the row & column of cell reference
+     */
     public static String[] getRowAndColumnIndices(String cellReference) {
         if (cellReference == null || !cellReference.matches("[A-Za-z]+[0-9]+")) {
             System.err.println("Invalid cell reference: " + cellReference);
@@ -102,39 +111,37 @@ public class CSVHandler {
                 col = col * 26 + (Character.toUpperCase(c) - 'A');
             }
         }
-
         int row = Integer.parseInt(cellReference.replaceAll("[A-Za-z]", "")) - 1;
 
         return new String[]{String.valueOf(row), String.valueOf(col)};
     }
 
 
+    
+    /** 
+     * @param row
+     * @param col
+     * @return String representation in letter number notation of a provided int row col
+     */
     private static String toCellNotation(int row, int col) {
         StringBuilder cellNotation = new StringBuilder();
-        // Convert column index to LETTER notation
         col++; // Adjust column index to start from 1 (A=1, B=2, ..., Z=26)
         while (col > 0) {
             int remainder = (col - 1) % 26;
             cellNotation.insert(0, (char) (remainder + 'a'));
             col = (col - 1) / 26;
         }
-        // Append row index to cell notation
         cellNotation.append(row + 1);
 
         return cellNotation.toString();
     }
+    
 
-    public static String getCellContents(String cellRef){
-        return cellContentsMap.get(cellRef);
-    }
-
-    public static void updateCellContents(String cellRef, String valueToInsert){
-
-        cellContentsMap.put(cellRef, valueToInsert);
-
-    }
-
-
+    
+    /** 
+     * @param str to check
+     * @return boolean true if str contains letters; false otherwise
+     */
     public static boolean containsLetters(String str) {
         for (char c : str.toCharArray()) {
             if (Character.isLetter(c)) {
@@ -143,11 +150,19 @@ public class CSVHandler {
         }
         return false;
     }
-
+    
+    /** 
+     * @param input string to check
+     * @return boolean true if input contains / * + -; false otherwise
+     */
     private static boolean containsOperator(String input) {
         return input.matches(".*[/*\\-+].*");
     }
 
+    /** 
+     * @param str to check
+     * @return boolean true if str contains numbers; false otherwise
+     */
     public static boolean containsDigits(String str) {
         for (char c : str.toCharArray()) {
             if (Character.isDigit(c)) {
@@ -157,6 +172,14 @@ public class CSVHandler {
         return false; // No digit found in the string
     }
 
+
+
+    
+    /** 
+     * @param key of HashMap
+     * @param value of Hashmap
+     * @return boolean true if the cell can be evaluated according to conditions outlined in task; false otherwise
+     */
     public static boolean cellIsValid(String key, String value){
 
         if(!containsLetters(value) && !containsDigits(value)){
@@ -178,6 +201,11 @@ public class CSVHandler {
 
     }
 
+    /** 
+     * @param key of HashMap
+     * @param value of HashMap
+     * @return String of cell without references to other cells - not fully functional
+     */
     public static String replaceCellReferences(String key, String value){
 
         String[] components = value.split("\\s+");

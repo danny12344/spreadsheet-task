@@ -7,6 +7,11 @@ public class CellCalculator {
 
     
     
+    
+    /** 
+     * @param exp expression in the form of postfix to evaluate
+     * @return returns the result of the evaluated expression as a float
+     */
     private static float evaluatePostfix(String exp) {
 
         String expCleaned = exp.replaceAll("[^a-zA-Z0-9*+/\\-\\s]", "");
@@ -52,12 +57,13 @@ public class CellCalculator {
         scanner.close();
         return stack.pop();
     }
-
-
-
     
+    
+    /** 
+     * @param cellContentsMap parsed CSV in the form of a HashMap
+     * @return HashMap<String, String> with the values of the Hashmap evaluated 
+     */
     public static HashMap<String, String> evaluateExpressions(HashMap<String, String> cellContentsMap) {
-
 
         HashMap<String, String> evaluatedMap = new HashMap<>();
 
@@ -93,10 +99,3 @@ public class CellCalculator {
         return evaluatedMap;
     }
 }
-
-
-
-                        
-// String actualValue = cellContentsMap.get(components[i]);
-// String actualValueCalc = Float.toString(evaluatePostfix(actualValue));
-// components[i] = actualValueCalc;

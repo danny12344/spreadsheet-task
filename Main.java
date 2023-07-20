@@ -9,9 +9,7 @@ public class Main {
 
         String csvFilePath = args[0];
 
-        System.out.println(csvFilePath);
-
-        String outputFile = "outputCSVV3.csv";
+        String outputFile = "output.csv";
 
         HashMap<String, String> input = CSVHandler.parseCSV(csvFilePath);
 
