@@ -5,8 +5,46 @@ import java.util.Stack;
 
 public class CellCalculator {
 
-    
-    
+
+    /** 
+     * @param cellContentsMap parsed CSV in the form of a HashMap
+     * @return HashMap<String, String> with the values of the Hashmap evaluated 
+     */
+    public static HashMap<String, String> evaluateExpressions(HashMap<String, String> cellContentsMap) {
+
+        HashMap<String, String> evaluatedMap = new HashMap<>();
+
+        for (Map.Entry<String, String> entry : cellContentsMap.entrySet()) {
+
+            String key = entry.getKey();
+            String value = entry.getValue();
+
+            String result = "";
+
+            if(!CSVHandler.cellIsValid(key, value)){
+                result = "#ERR";
+                evaluatedMap.put(key, result);
+            } else {
+
+                if (!CSVHandler.containsLetters(value)){
+
+                    result = Float.toString(evaluatePostfix(value));
+                    evaluatedMap.put(key, result);
+                } else {
+
+                    String updatedExpression = CSVHandler.replaceCellReferences(key, value);
+
+                    result = Float.toString(evaluatePostfix(updatedExpression));
+                
+                    evaluatedMap.put(key, result);
+
+                }
+
+            }
+            
+        }
+        return evaluatedMap;
+    }
     
     /** 
      * @param exp expression in the form of postfix to evaluate
@@ -59,43 +97,5 @@ public class CellCalculator {
     }
     
     
-    /** 
-     * @param cellContentsMap parsed CSV in the form of a HashMap
-     * @return HashMap<String, String> with the values of the Hashmap evaluated 
-     */
-    public static HashMap<String, String> evaluateExpressions(HashMap<String, String> cellContentsMap) {
-
-        HashMap<String, String> evaluatedMap = new HashMap<>();
-
-        for (Map.Entry<String, String> entry : cellContentsMap.entrySet()) {
-
-            String key = entry.getKey();
-            String value = entry.getValue();
-
-            String result = "";
-
-            if(!CSVHandler.cellIsValid(key, value)){
-                result = "#ERR";
-                evaluatedMap.put(key, result);
-            } else {
-
-                if (!CSVHandler.containsLetters(value)){
-
-                    result = Float.toString(evaluatePostfix(value));
-                    evaluatedMap.put(key, result);
-                } else {
-
-                    String updatedExpression = CSVHandler.replaceCellReferences(key, value);
-
-                    result = Float.toString(evaluatePostfix(updatedExpression));
-                
-                    evaluatedMap.put(key, result);
-
-                }
-
-            }
-            
-        }
-        return evaluatedMap;
-    }
+    
 }
