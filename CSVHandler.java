@@ -78,15 +78,16 @@ public class CSVHandler {
             // Write the CSV data to the file
             for (int row = 0; row < csvData.length; row++) {
                 for (int col = 0; col < csvData[row].length; col++) {
+                    System.out.print(csvData[row][col] != null ? csvData[row][col] : "");
                     writer.write(csvData[row][col] != null ? String.valueOf(csvData[row][col]) : "");
                     if (col < csvData[row].length - 1) {
+                        System.out.print(",");
                         writer.write(",");
                     }
                 }
+                System.out.println();
                 writer.newLine();
             }
-
-            System.out.println("HashMap data has been written to the CSV file successfully.");
 
         } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
